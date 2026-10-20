@@ -142,3 +142,22 @@ La elección deberá justificar:
 - Migraciones reproducibles.
 - Transacciones.
 - Facilidad de pruebas y mantenimiento.
+
+## D09. Persistencia con SQL explícito
+
+Estado: aceptada.
+
+Utilizaremos SQL explícito y el cliente pg para acceder a PostgreSQL.
+No utilizaremos un ORM en esta etapa.
+
+Motivo:
+Profundizar en SQL, integridad relacional, transacciones, índices
+y comportamiento de PostgreSQL.
+
+Las consultas estarán encapsuladas en repositorios concretos.
+Se utilizarán parámetros para los valores recibidos de la aplicación.
+
+Coste:
+Mantener consultas, mapeos de filas y tratamiento de errores explícitamente.
+
+La herramienta de migraciones está pendiente de elegir.

@@ -94,3 +94,15 @@ en estos documentos.
 - Distinguir propuesto, implementado y verificado.
 - Actualizar este estado al cerrar un incremento o cambiar de dirección.
 - Consultar estos documentos al retomar el proyecto.
+
+## Permisos de PostgreSQL verificados
+
+- house_admin administra el entorno.
+- house_migrator es propietario del esquema app.
+- house_app puede consultar y modificar datos.
+- house_app no puede crear tablas ni alterar su estructura.
+- Los permisos predeterminados para tablas y secuencias futuras
+  creadas por house_migrator se han comprobado.
+- Las pruebas se realizaron con conexiones separadas en pgAdmin.
+- La preparación inicial se conserva sin contraseñas en
+  database/bootstrap/001_roles_and_schema.sql.

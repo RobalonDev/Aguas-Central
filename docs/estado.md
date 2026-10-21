@@ -106,3 +106,20 @@ en estos documentos.
 - Las pruebas se realizaron con conexiones separadas en pgAdmin.
 - La preparación inicial se conserva sin contraseñas en
   database/bootstrap/001_roles_and_schema.sql.
+
+## Primera migración aplicada y comprobada
+
+- node-pg-migrate configurado con archivos SQL.
+- Historial en migrations.pgmigrations.
+- Tablas app.users y app.password_credentials creadas.
+- Inserción de usuario mediante house_app comprobada.
+- Rechazo de email sin normalizar comprobado.
+- Rechazo de email duplicado comprobado.
+- Rechazo de nombre compuesto solo por espacios comprobado.
+- Pruebas realizadas dentro de transacciones y revertidas.
+
+Pendiente:
+
+- Comprobar la clave foránea y unicidad de password_credentials.
+- Conectar Nest a PostgreSQL mediante pg.
+- Implementar el registro con creación atómica de usuario y credencial.

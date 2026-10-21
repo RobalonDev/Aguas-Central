@@ -58,4 +58,7 @@ ALTER DEFAULT PRIVILEGES
   GRANT USAGE ON SEQUENCES
   TO house_app;
 
+  -- Historial de migraciones, separado de las tablas de negocio.
+CREATE SCHEMA migrations AUTHORIZATION house_migrator;
+
 COMMIT;

@@ -5,6 +5,14 @@ const environmentSchema = z.object({
     .enum(['development', 'test', 'production'])
     .default('development'),
   PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+  DATABASE_URL: z
+    .string()
+    .url()
+    .refine(
+      (value) =>
+        value.startsWith('postgresql://') || value.startsWith('postgres://'),
+      'Debe utilizar el protocolo postgresql:// o postgres://',
+    ),
 });
 
 export type Environment = z.infer<typeof environmentSchema>;

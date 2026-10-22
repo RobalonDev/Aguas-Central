@@ -11,8 +11,10 @@ async function bootstrap() {
   const environment = config.get('NODE_ENV', { infer: true });
   await app.listen(port ?? 3000);
 
+  app.enableShutdownHooks();
+
   if (environment != 'production') {
-    console.log(`⚠️  Server is running in ${environment} mode ⚠️`);
+    console.log(`⚙️  Server is running in ${environment} mode ⚙️`);
   }
 
   console.log(`🚀 Server is running on port ${port ?? 3000} 🚀`);

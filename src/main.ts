@@ -12,7 +12,7 @@ async function bootstrap() {
   await app.listen(port ?? 3000);
 
   if (environment != 'production') {
-    console.log(`⚠️  Server is running in ${environment} mode ⚠️`);
+    console.log(`⚙️  Server is running in ${environment} mode ⚙️`);
   }
 
   console.log(`🚀 Server is running on port ${port ?? 3000} 🚀`);

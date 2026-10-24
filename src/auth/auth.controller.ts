@@ -6,10 +6,10 @@ export class AuthController {
   constructor() {}
 
   @Post('register')
-  createUser(@Body() dto: RegisterDto) {
-    const payload = dto;
-    console.log(payload);
-
-    return payload;
+  register(@Body() dto: RegisterDto) {
+    return {
+      email: dto.email,
+      displayName: dto.displayName,
+    };
   }
 }

@@ -1,0 +1,8 @@
+### Create a user
+POST http://localhost:3001/auth/register
+Content-Type: application/json
+{
+    "email": "robalon.dev@gmail.com",
+    "displayName": "Roberto",
+    "password": "pass"
+}

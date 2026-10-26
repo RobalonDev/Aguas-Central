@@ -14,9 +14,9 @@ type CreatedUserRow = {
   display_name: string;
 };
 
-type createUserResult =
+type CreateUserResult =
   | { ok: true; user: CreatedUserRow }
-  | { ok: false; reason: 'EMAIL-ALREADY-EXISTS' };
+  | { ok: false; reason: 'EMAIL_ALREADY_EXISTS' };
 
 const USER_CONSTRAINTS = {
   EMAIL_UNIQUE: 'users_email_unique',
@@ -30,7 +30,7 @@ export class AuthRepository {
 
   async createUserWithPassword(
     data: CreateUserWithPasswordInput,
-  ): Promise<createUserResult> {
+  ): Promise<CreateUserResult> {
     const client = await this.databaseService.pool.connect();
 
     let discardClient = false;
@@ -65,11 +65,6 @@ export class AuthRepository {
     } catch (error: unknown) {
       try {
         await client.query('ROLLBACK');
-        if (!discardClient && isEmailAlreadyExistsError(error)) {
-          return { ok: false, reason: 'EMAIL-ALREADY-EXISTS' };
-        }
-
-        throw error;
       } catch (rollbackError: unknown) {
         discardClient = true;
 
@@ -77,6 +72,10 @@ export class AuthRepository {
           'Falló el rollback de la transacción de registro',
           rollbackError instanceof Error ? rollbackError.stack : undefined,
         );
+      }
+
+      if (!discardClient && isEmailAlreadyExistsError(error)) {
+        return { ok: false, reason: 'EMAIL_ALREADY_EXISTS' };
       }
 
       throw error;

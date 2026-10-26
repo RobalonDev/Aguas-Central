@@ -13,6 +13,18 @@ type CreatedUserRow = {
   display_name: string;
 };
 
+type createUserResult =
+  | { ok: true; user: CreatedUserRow }
+  | { ok: false; reason: 'EMAIL-ALREADY-EXISTS' };
+
+export const POSTGRES_ERROR_CODES = {
+  UNIQUE_VIOLATION: '23505',
+} as const;
+
+const USER_CONSTRAINTS = {
+  EMAIL_UNIQUE: 'users_email_unique',
+} as const;
+
 @Injectable()
 export class AuthRepository {
   private readonly logger = new Logger(AuthRepository.name);
@@ -21,7 +33,7 @@ export class AuthRepository {
 
   async createUserWithPassword(
     data: CreateUserWithPasswordInput,
-  ): Promise<CreatedUserRow> {
+  ): Promise<createUserResult> {
     const client = await this.databaseService.pool.connect();
 
     let discardClient = false;
@@ -52,10 +64,15 @@ export class AuthRepository {
 
       await client.query('COMMIT');
 
-      return user;
+      return { ok: true, user };
     } catch (error: unknown) {
       try {
         await client.query('ROLLBACK');
+        if (!discardClient && isEmailAlreadyExistsError(error)) {
+          return { ok: false, reason: 'EMAIL-ALREADY-EXISTS' };
+        }
+
+        throw error;
       } catch (rollbackError: unknown) {
         discardClient = true;
 
@@ -70,4 +87,26 @@ export class AuthRepository {
       client.release(discardClient);
     }
   }
+}
+
+function isEmailAlreadyExistsError(error: unknown): boolean {
+  if (typeof error !== 'object' || error === null) {
+    return false;
+  }
+
+  if (
+    !('code' in error) ||
+    error.code !== POSTGRES_ERROR_CODES.UNIQUE_VIOLATION
+  ) {
+    return false;
+  }
+
+  if (
+    !('constraint' in error) ||
+    error.constraint !== USER_CONSTRAINTS.EMAIL_UNIQUE
+  ) {
+    return false;
+  }
+
+  return true;
 }

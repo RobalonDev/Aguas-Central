@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataBaseService } from '../database/database.service';
+import { POSTGRES_ERROR_CODES } from '../database/postgres-errors';
 
 type CreateUserWithPasswordInput = {
   email: string;
@@ -16,10 +17,6 @@ type CreatedUserRow = {
 type createUserResult =
   | { ok: true; user: CreatedUserRow }
   | { ok: false; reason: 'EMAIL-ALREADY-EXISTS' };
-
-export const POSTGRES_ERROR_CODES = {
-  UNIQUE_VIOLATION: '23505',
-} as const;
 
 const USER_CONSTRAINTS = {
   EMAIL_UNIQUE: 'users_email_unique',

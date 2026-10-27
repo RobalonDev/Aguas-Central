@@ -24,7 +24,8 @@
     "docker:up": "docker compose up -d --wait",
     "db:migrate": "node-pg-migrate up --migrations-dir database/migrations --schema app --migrations-schema migrations --database-url-var MIGRATION_DATABASE_URL --envPath .env",
     "db:migrate:preview": "pnpm run db:migrate --dry-run",
-    "db:migrate:create": "node-pg-migrate create --migrations-dir database/migrations --migration-file-language sql"
+    "db:migrate:create": "node-pg-migrate create --migrations-dir database/migrations --migration-file-language sql",
+    "db:generate": "node --env-file=.env ./node_modules/@pgtyped/cli/lib/index.js --config pgtyped.config.json"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

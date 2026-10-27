@@ -1,6 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataBaseService } from '../database/database.service';
 import { POSTGRES_ERROR_CODES } from '../database/postgres-errors';
+import {
+  createPasswordCredential,
+  createUser,
+  ICreateUserResult,
+} from './sql/users.queries';
 
 type CreateUserWithPasswordInput = {
   email: string;
@@ -8,14 +13,8 @@ type CreateUserWithPasswordInput = {
   passwordHash: string;
 };
 
-type CreatedUserRow = {
-  id: string;
-  email: string;
-  display_name: string;
-};
-
-type CreateUserResult =
-  | { ok: true; user: CreatedUserRow }
+type CreateUserWithPasswordResult =
+  | { ok: true; user: ICreateUserResult }
   | { ok: false; reason: 'EMAIL_ALREADY_EXISTS' };
 
 const USER_CONSTRAINTS = {
@@ -30,33 +29,30 @@ export class AuthRepository {
 
   async createUserWithPassword(
     data: CreateUserWithPasswordInput,
-  ): Promise<CreateUserResult> {
+  ): Promise<CreateUserWithPasswordResult> {
     const client = await this.databaseService.pool.connect();
 
     let discardClient = false;
     try {
       await client.query('BEGIN');
 
-      const result = await client.query<CreatedUserRow>(
-        `
-            INSERT INTO app.users (email, display_name)
-            VALUES ($1, $2)
-            RETURNING id, email, display_name
-        `,
-        [data.email, data.displayName],
+      const users = await createUser.run(
+        {
+          displayName: data.displayName,
+          email: data.email,
+        },
+        client,
       );
 
-      const user = result.rows[0];
+      const user = users[0];
+
       if (user === undefined) {
         throw new Error('La inserción del usuario no devolvió ninguna fila');
       }
 
-      await client.query(
-        `
-            INSERT INTO app.password_credentials (user_id, password_hash)
-            VALUES ($1, $2)
-        `,
-        [user.id, data.passwordHash],
+      await createPasswordCredential.run(
+        { passwordHash: data.passwordHash, userId: user.id },
+        client,
       );
 
       await client.query('COMMIT');

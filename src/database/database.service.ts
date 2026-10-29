@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
-import { Environment } from 'src/config/env.validaction';
+import { Environment } from 'src/config/env.validation';
 
 @Injectable()
 export class DataBaseService implements OnModuleInit, OnApplicationShutdown {

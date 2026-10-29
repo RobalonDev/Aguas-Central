@@ -123,3 +123,24 @@ Pendiente:
 - Comprobar la clave foránea y unicidad de password_credentials.
 - Conectar Nest a PostgreSQL mediante pg.
 - Implementar el registro con creación atómica de usuario y credencial.
+
+## Registro inicial implementado y verificado
+
+- Registro con email, nombre y contraseña.
+- Validación y normalización mediante DTO y ValidationPipe.
+- Contraseñas almacenadas con Argon2id.
+- Usuario y credencial creados en una transacción.
+- Consultas SQL con tipos generados mediante PgTyped.
+- Respuesta genérica 202 para creación y email duplicado.
+- El duplicado conserva la cuenta y credencial originales.
+- Tres pruebas de integración del repositorio superadas.
+- Once casos e2e superados contra house_test.
+
+Pendientes:
+
+- Verificación del email y envío de correo.
+- Rechazo de contraseñas comunes o comprometidas.
+- Protección frente a abuso y control del coste de hashing.
+- Login y sesiones.
+- Centralizar la configuración del pipe compartida por arranque y e2e.
+- Aviso de peer opcional de Nunjucks pendiente de seguimiento.

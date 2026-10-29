@@ -20,12 +20,14 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "node --env-file=.env.test ./node_modules/jest/bin/jest.js --config ./test/jest-e2e.json --runInBand",
     "docker:up": "docker compose up -d --wait",
     "db:migrate": "node-pg-migrate up --migrations-dir database/migrations --schema app --migrations-schema migrations --database-url-var MIGRATION_DATABASE_URL --envPath .env",
     "db:migrate:preview": "pnpm run db:migrate --dry-run",
     "db:migrate:create": "node-pg-migrate create --migrations-dir database/migrations --migration-file-language sql",
-    "db:generate": "node --env-file=.env ./node_modules/@pgtyped/cli/lib/index.js --config pgtyped.config.json"
+    "db:generate": "node --env-file=.env ./node_modules/@pgtyped/cli/lib/index.js --config pgtyped.config.json",
+    "db:migrate:test": "node-pg-migrate up --migrations-dir database/migrations --schema app --migrations-schema migrations --database-url-var MIGRATION_DATABASE_URL --envPath .env.test",
+    "test:integration": "node --env-file=.env.test ./node_modules/jest/bin/jest.js --config ./test/jest-integration.json --runInBand"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -46,6 +48,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
+    "@jest/globals": "^30.5.2",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
